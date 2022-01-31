@@ -1,4 +1,4 @@
-package com.graphql;
+package br.com.pablohdev.graphqlnews;
 
 import com.facebook.react.ReactActivity;
 

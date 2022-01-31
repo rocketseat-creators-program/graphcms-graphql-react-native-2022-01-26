@@ -1,13 +1,17 @@
 import React from 'react';
 import {NativeBaseProvider} from 'native-base';
 
+import {ApolloContextProvider} from './context/ApolloContext';
+
 import Routes from './routes';
 
 const App = () => {
   return (
-    <NativeBaseProvider>
-      <Routes />
-    </NativeBaseProvider>
+    <ApolloContextProvider>
+      <NativeBaseProvider>
+        <Routes />
+      </NativeBaseProvider>
+    </ApolloContextProvider>
   );
 };
 

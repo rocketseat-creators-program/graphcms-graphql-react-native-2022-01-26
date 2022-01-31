@@ -1,4 +1,5 @@
-import React from 'react';
+import React, {useMemo} from 'react';
+import {SafeAreaView} from 'react-native';
 import {
   Box,
   Heading,
@@ -11,12 +12,41 @@ import {
   HStack,
   ArrowBackIcon,
   StatusBar,
+  Stack,
+  Spinner,
   Button,
 } from 'native-base';
-import {useNavigation} from '@react-navigation/native';
+import {useNavigation, useRoute} from '@react-navigation/native';
+
+import {useQuery} from '@apollo/client';
+import {GET_POST} from '../../graphql/query/posts';
 
 const AboutPost: React.FC = () => {
   const navigation = useNavigation();
+  const {params} = useRoute();
+
+  const postId = params?.postId || '';
+
+  const {data, loading} = useQuery(GET_POST, {
+    variables: {id: postId},
+  });
+
+  const post = useMemo(() => {
+    if (!loading && data?.post) {
+      return data.post;
+    }
+    return [];
+  }, [data, loading]);
+
+  if (loading) {
+    return (
+      <SafeAreaView style={{flex: 1}}>
+        <Stack flex={1} justifyContent="center" alignItems="center">
+          <Spinner color="cyan.500" size="lg" />
+        </Stack>
+      </SafeAreaView>
+    );
+  }
 
   return (
     <ScrollView>
@@ -25,7 +55,7 @@ const AboutPost: React.FC = () => {
         <AspectRatio w="100%" ratio={16 / 9}>
           <Image
             source={{
-              uri: 'https://blog.rocketseat.com.br/content/images/size/w2000/2022/01/Rocketseat-jquery-historia.jpg',
+              uri: post.coverUrl,
             }}
             alt="image"
           />
@@ -51,52 +81,14 @@ const AboutPost: React.FC = () => {
           right="0"
           px="3"
           py="1.5">
-          TAG
+          {post.categorie}
         </Center>
       </Box>
       <VStack mt={4} px={4}>
         <HStack>
-          <Heading mb={4}>Title of post</Heading>
+          <Heading mb={4}>{post.title}</Heading>
         </HStack>
-        <Text mb={4}>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Quo non ea,
-          debitis odit commodi saepe. Recusandae incidunt ducimus dolore,
-          impedit temporibus necessitatibus quia! Cum possimus, similique
-          deleniti sequi blanditiis aliquam.
-        </Text>
-        <Text mb={4}>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Quo non ea,
-          debitis odit commodi saepe. Recusandae incidunt ducimus dolore,
-          impedit temporibus necessitatibus quia! Cum possimus, similique
-          deleniti sequi blanditiis aliquam.
-        </Text>
-        <Text mb={4}>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Quo non ea,
-          debitis odit commodi saepe. Recusandae incidunt ducimus dolore,
-          impedit temporibus necessitatibus quia! Cum possimus, similique
-          deleniti sequi blanditiis aliquam.Lorem ipsum dolor sit amet
-          consectetur adipisicing elit. Quo non ea, debitis odit commodi saepe.
-          Recusandae incidunt ducimus dolore, impedit temporibus necessitatibus
-          quia! Cum possimus, similique deleniti sequi blanditiis aliquam.
-        </Text>
-        <Text mb={4}>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Quo non ea,
-          debitis odit commodi saepe. Recusandae incidunt ducimus dolore,
-          impedit temporibus necessitatibus quia! Cum possimus, similique
-          deleniti sequi blanditiis aliquam.Lorem ipsum dolor sit amet
-          consectetur adipisicing elit. Quo non ea, debitis odit commodi saepe.
-          Recusandae incidunt ducimus dolore, impedit temporibus necessitatibus
-          quia! Cum possimus, similique deleniti sequi blanditiis aliquam.
-        </Text>
-        <Text mb={4}>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Quo non ea,
-          debitis odit commodi saepe. Recusandae incidunt ducimus dolore,
-          impedit temporibus necessitatibus quia! Cum possimus, similique
-          deleniti sequi blanditiis aliquam.Lorem ipsum dolor sit amet
-          consectetur adipisicing elit. Quo non ea, debitis odit commodi saepe.
-          Recusandae incidunt ducimus dolore, impedit temporibus necessitatibus
-          quia! Cum possimus, similique deleniti sequi blanditiis aliquam.
-        </Text>
+        <Text mb={4}>{post.description.text.replace(/\\n/g, '\n')}</Text>
       </VStack>
     </ScrollView>
   );

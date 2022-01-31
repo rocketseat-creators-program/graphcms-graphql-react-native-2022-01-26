@@ -11,12 +11,26 @@ import {
   Button,
 } from 'native-base';
 import {useNavigation} from '@react-navigation/native';
+import {CAREGORIES} from '../../utils/enums/categories';
+import {stringToDate} from '../../helpers/date';
 
-const PostCard = () => {
+interface IPostItem {
+  id: string;
+  title: string;
+  categorie: CAREGORIES;
+  shortDescription: string;
+  createdAt: string;
+  description: string | object;
+  coverUrl: string;
+}
+
+const PostCard = ({item}: {item: IPostItem}) => {
   const navigation = useNavigation();
 
   const goToPost = () => {
-    navigation.navigate('AboutPost');
+    navigation.navigate('AboutPost', {
+      postId: item.id,
+    });
   };
   return (
     <Box
@@ -40,7 +54,7 @@ const PostCard = () => {
         <AspectRatio w="100%" ratio={16 / 9}>
           <Image
             source={{
-              uri: 'https://blog.rocketseat.com.br/content/images/size/w2000/2022/01/Rocketseat-jquery-historia.jpg',
+              uri: item.coverUrl,
             }}
             alt="image"
           />
@@ -59,19 +73,16 @@ const PostCard = () => {
           bottom="0"
           px="3"
           py="1.5">
-          TAG
+          {item.categorie}
         </Center>
       </Box>
       <Stack p="4" space={3}>
         <Stack space={2}>
           <Heading size="md" ml="-1">
-            The Garden City
+            {item.title}
           </Heading>
         </Stack>
-        <Text fontWeight="400">
-          Bengaluru (also called Bangalore) is the center of India's high-tech
-          industry. The city is also known for its parks and nightlife.
-        </Text>
+        <Text fontWeight="400">{item.shortDescription}</Text>
         <HStack alignItems="center" space={4} justifyContent="space-between">
           <HStack alignItems="center">
             <Text
@@ -80,7 +91,7 @@ const PostCard = () => {
                 color: 'warmGray.200',
               }}
               fontWeight="400">
-              6 mins ago
+              {stringToDate(item.createdAt)}
             </Text>
           </HStack>
           <Button onPress={goToPost}>Ver mais...</Button>

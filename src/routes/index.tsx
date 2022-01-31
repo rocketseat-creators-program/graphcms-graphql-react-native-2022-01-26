@@ -5,7 +5,12 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import Home from '../pages/Home';
 import AboutPost from '../pages/AboutPost';
 
-const Stack = createNativeStackNavigator();
+export type RootStackParamList = {
+  Home: undefined;
+  AboutPost: {postId: string};
+};
+
+const Stack = createNativeStackNavigator<RootStackParamList>();
 
 function Routes() {
   return (
