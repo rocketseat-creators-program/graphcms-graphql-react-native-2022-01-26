@@ -9,6 +9,7 @@ Nesta aula iremos fazer a integração do react native com o graphCMS (Um servi�
 ## Sobre as branches
 
 [Master] -> Template inicial da aula
+
 [finished] -> Projeto finalizado
 
 
